@@ -47,10 +47,6 @@ def record(command):
     sf.close()
     return filename
 
-def decode_audio(audio_binary):
-    audio, _ = tf.audio.decode_wav(contents = audio_binary)
-    return tf.squeeze(audio, axis = -1)
-
 def normalize_audio(audio):
     audio = audio/np.max(np.abs(audio))
     return audio
@@ -150,7 +146,7 @@ output_details = interpreter.get_output_details()
 input_shape = input_details[0]['shape']
 input("Press Enter to Continue !!! \n")
 command = record('voice1')
-input_data = preprocess(command).reshape(1, 40, 99, 1)
+input_data = preprocess(command).reshape(1, 40, 99, 1).astype(np.float32)
 interpreter.set_tensor(input_details[0]['index'], input_data)
 interpreter.invoke()
 output_data = interpreter.get_tensor(output_details[0]['index'])
