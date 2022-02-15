@@ -1,14 +1,10 @@
-import os
 import numpy as np
-import tensorflow as tf
 import pyaudio
 import wave 
-from pydub import AudioSegment
 from pydub.playback import play
 from scipy.io import wavfile
 from scipy.fftpack import fft
 from scipy.signal import get_window
-import matplotlib.pyplot as plt
 import tflite_runtime.interpreter as tflite
 
 
