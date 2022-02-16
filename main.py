@@ -233,6 +233,7 @@ while True:
 
         word2_pred = ids_to_commands[np.argmax(word2_prob)]
         command_word = word1_pred + " " + word2_pred
+        print(command_word)
 
         if command_word == "Engine On":
             GPIO.output(green, GPIO.HIGH)
