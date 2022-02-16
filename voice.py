@@ -170,5 +170,5 @@ elif word1_pred == "Window":
 elif word1_pred == "Wiper":
     word2_prob = word2_prob.squeeze() * np.array([0, 0, 0, 0, 1, 1, 1, 0, 0, 0])
 
-word2_pred = ids_to_commands[np.argmax(word2_prob)[0]]
+word2_pred = ids_to_commands[np.argmax(word2_prob)]
 print(word1_pred + " " + word2_pred)
