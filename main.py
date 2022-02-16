@@ -193,9 +193,11 @@ while (True):
     rfid_key = (hash_key == hash_val) and (id == id1 or id == id2)
     seat_belt = GPIO.input(switch_seat_belt)
     alcohol = wiringpi.digitalRead(mq3)
+    print(rfid_key, seat_belt, alcohol)
     if rfid_key and seat_belt and not alcohol:
         break
 
+print("Authentication Successful !!")
 while True:
     if GPIO.input(sos) == GPIO.HIGH:
         pass
