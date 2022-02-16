@@ -144,13 +144,22 @@ input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
 input_shape = input_details[0]['shape']
+
 input("Press Enter to Continue !!! \n")
-command = record('voice1')
-input_data = preprocess(command).reshape(1, 40, 99, 1).astype(np.float32)
-interpreter.set_tensor(input_details[0]['index'], input_data)
+command1 = record('voice1')
+# Put some delay as of now input is used
+input("Press Enter to Continue recording !!! \n")
+command2 = record('voice2')
+word1 = preprocess(command1).reshape(1, 40, 99, 1).astype(np.float32)
+word2 = preprocess(command2).reshape(1, 40, 99, 1).astype(np.float32)
+interpreter.set_tensor(input_details[0]['index'], word1)
 interpreter.invoke()
-output_data = interpreter.get_tensor(output_details[0]['index'])
-final_output = ids_to_commands[np.argmax(output_data, axis = 1)[0]]
+word1_prob = interpreter.get_tensor(output_details[0]['index'])
+word1_pred = ids_to_commands[np.argmax(word1_prob, axis = 1)[0]]
 
-print(final_output)
+interpreter.set_tensor(input_details[0]['index'], word2)
+interpreter.invoke()
+word2_prob = interpreter.get_tensor(output_details[0]['index'])
+word2_pred = ids_to_commands[np.argmax(word2_prob, axis = 1)[0]]
 
+print(word1_pred + " " + word2_pred)
