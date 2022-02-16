@@ -21,6 +21,8 @@ red = 37
 green = 35
 voice = 38
 sos = 33
+
+GPIO.setmode(GPIO.BOARD)
 GPIO.setup(buzzer, GPIO.OUT)
 GPIO.setup(switch_record, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(switch_seat_belt, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
