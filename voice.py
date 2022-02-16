@@ -6,8 +6,14 @@ from scipy.io import wavfile
 from scipy.fftpack import fft
 from scipy.signal import get_window
 import tflite_runtime.interpreter as tflite
+import RPi.GPIO as GPIO
+from time import sleep
 
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BOARD)
 
+buzzer = 40
+GPIO.setup(buzzer, GPIO.OUT)
 
 def record(command):
     # Record in chunks of 1024 samples
@@ -133,6 +139,11 @@ def preprocess(filepath):
     cepstral_coefficents = np.dot(dct_filters, audio_log)
     return cepstral_coefficents
 
+def buzz_bw_commands():
+    GPIO.output(buzzer, GPIO.HIGH)
+    sleep(0.5)
+    GPIO.output(buzzer, GPIO.LOW)
+
 
 commands_to_ids = {'Down' : 0, 'Engine' : 1, 'Off' : 2, 'On' : 3, 'One' : 4, 'Three' : 5, 'Two' : 6, 'Up' : 7, 'Window' : 8, 'Wiper' : 9}
 ids_to_commands = {0 : 'Down', 1: 'Engine', 2 : 'Off', 3 : 'On', 4 : 'One', 5 : 'Three', 6 : 'Two',  7 : 'Up', 8 : 'Window', 9 : 'Wiper'}
@@ -148,6 +159,7 @@ input_shape = input_details[0]['shape']
 input("Press Enter to Continue !!! \n")
 command1 = record('voice1')
 # Put some delay as of now input is used
+buzz_bw_commands()
 input("Press Enter to Continue recording !!! \n")
 command2 = record('voice2')
 word1 = preprocess(command1).reshape(1, 40, 99, 1).astype(np.float32)
