@@ -33,7 +33,7 @@ GPIO.setup(sos, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(voice, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(power, GPIO.OUT)
 
-GPIO.output(power, GPIO.HIGH)
+GPIO.output(power, GPIO.LOW)
 
 commands_to_ids = {'Down' : 0, 'Engine' : 1, 'Off' : 2, 'On' : 3, 'One' : 4, 'Three' : 5, 'Two' : 6, 'Up' : 7, 'Window' : 8, 'Wiper' : 9}
 ids_to_commands = {0 : 'Down', 1: 'Engine', 2 : 'Off', 3 : 'On', 4 : 'One', 5 : 'Three', 6 : 'Two',  7 : 'Up', 8 : 'Window', 9 : 'Wiper'}
@@ -45,6 +45,7 @@ input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
 input_shape = input_details[0]['shape']
+GPIO.output(power, GPIO.HIGH)
 
 reader = SimpleMFRC522()
 hash_key = "68c07b6bf4f591095ad1c43c065a801822a6c9cdd8e15364"
