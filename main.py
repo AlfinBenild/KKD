@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import numpy as np
 import pyaudio
 import wave 
@@ -21,6 +23,7 @@ red = 37
 green = 35
 voice = 38
 sos = 33
+power = 32
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(buzzer, GPIO.OUT)
@@ -28,7 +31,9 @@ GPIO.setup(switch_record, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(switch_seat_belt, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(sos, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(voice, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(power, GPIO.OUT)
 
+GPIO.output(power, GPIO.HIGH)
 
 commands_to_ids = {'Down' : 0, 'Engine' : 1, 'Off' : 2, 'On' : 3, 'One' : 4, 'Three' : 5, 'Two' : 6, 'Up' : 7, 'Window' : 8, 'Wiper' : 9}
 ids_to_commands = {0 : 'Down', 1: 'Engine', 2 : 'Off', 3 : 'On', 4 : 'One', 5 : 'Three', 6 : 'Two',  7 : 'Up', 8 : 'Window', 9 : 'Wiper'}
