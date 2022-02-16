@@ -42,7 +42,7 @@ output_details = interpreter.get_output_details()
 input_shape = input_details[0]['shape']
 
 reader = SimpleMFRC522()
-hash_key = "68c07b6bf4f591095ad1c43c065a801822a6c9cdd8e1536413df05c9fc57364"
+hash_key = "68c07b6bf4f591095ad1c43c065a801822a6c9cdd8e15364"
 id1 = "702537013584"
 id2 = "807655716992"
 id, hash_val = reader.read()
