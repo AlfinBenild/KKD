@@ -163,7 +163,6 @@ while (GPIO.input(switch_record) != GPIO.HIGH):
 command1 = record('voice1')
 # Put some delay as of now input is used
 buzz_bw_commands()
-input("Press Enter to Continue recording !!! \n")
 command2 = record('voice2')
 word1 = preprocess(command1).reshape(1, 40, 99, 1).astype(np.float32)
 word2 = preprocess(command2).reshape(1, 40, 99, 1).astype(np.float32)
