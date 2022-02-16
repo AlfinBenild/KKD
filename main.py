@@ -24,6 +24,7 @@ green = 35
 voice = 38
 sos = 33
 power = 32
+authentication = 31
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(buzzer, GPIO.OUT)
@@ -32,6 +33,8 @@ GPIO.setup(switch_seat_belt, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(sos, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(voice, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(power, GPIO.OUT)
+GPIO.setup(authentication, GPIO.OUT)
+GPIO.output(authentication, GPIO.LOW)
 
 GPIO.output(power, GPIO.LOW)
 
@@ -207,6 +210,7 @@ while (True):
         break
 
 print("Authentication Successful !!")
+GPIO.output(authentication, GPIO.HIGH)
 while True:
     if GPIO.input(sos) == GPIO.HIGH:
         pass
