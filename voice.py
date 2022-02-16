@@ -160,6 +160,15 @@ word1_pred = ids_to_commands[np.argmax(word1_prob, axis = 1)[0]]
 interpreter.set_tensor(input_details[0]['index'], word2)
 interpreter.invoke()
 word2_prob = interpreter.get_tensor(output_details[0]['index'])
-word2_pred = ids_to_commands[np.argmax(word2_prob, axis = 1)[0]]
 
+commands = ['Down', 'Engine', 'Off', 'On', 'One', 'Three', 'Two', 'Up', 'Window', 'Wiper']
+
+if word1_pred == "Engine":
+    word2_prob = word2_prob.squeeze() * np.array([0, 0, 1, 1, 0, 0, 0, 0, 0, 0])
+elif word1_pred == "Window":
+    word2_prob = word2_prob.squeeze() * np.array([1, 0, 0, 0, 0, 0, 0, 1, 0, 0])
+elif word1_pred == "Wiper":
+    word2_prob = word2_prob.squeeze() * np.array([0, 0, 0, 0, 1, 1, 1, 0, 0, 0])
+
+word2_pred = ids_to_commands[np.argmax(word2_prob)[0]]
 print(word1_pred + " " + word2_pred)
