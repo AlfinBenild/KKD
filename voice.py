@@ -148,7 +148,7 @@ def buzz_bw_commands():
 commands_to_ids = {'Down' : 0, 'Engine' : 1, 'Off' : 2, 'On' : 3, 'One' : 4, 'Three' : 5, 'Two' : 6, 'Up' : 7, 'Window' : 8, 'Wiper' : 9}
 ids_to_commands = {0 : 'Down', 1: 'Engine', 2 : 'Off', 3 : 'On', 4 : 'One', 5 : 'Three', 6 : 'Two',  7 : 'Up', 8 : 'Window', 9 : 'Wiper'}
 
-interpreter = tflite.Interpreter("voice_model.tflite")
+interpreter = tflite.Interpreter("voice_model_softmax.tflite")
 interpreter.allocate_tensors()
 
 input_details = interpreter.get_input_details()
