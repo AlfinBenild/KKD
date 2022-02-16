@@ -52,8 +52,8 @@ GPIO.setup(red, GPIO.OUT)
 GPIO.setup(green, GPIO.OUT)
 
 # Conditions
-
-rfid_key = (hash_key == hash_val) and (id == id1 or id == id2)
+id = str(id)
+rfid_key = (hash_key == str(hash_val)) and (id == id1 or id == id2)
 seat_belt = GPIO.input(switch_seat_belt)
 alcohol = wiringpi.digitalRead(mq3)
 
@@ -191,6 +191,8 @@ def buzz_bw_commands():
 
 while (True):
     id, hash_val = reader.read()
+    id = str(id)
+    hash_val = str(hash_val)
     rfid_key = (hash_key == hash_val)  and (id == id1 or id == id2)
     seat_belt = GPIO.input(switch_seat_belt)
     alcohol = wiringpi.digitalRead(mq3)
