@@ -13,7 +13,9 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 
 buzzer = 40
+switch_record = 38
 GPIO.setup(buzzer, GPIO.OUT)
+GPIO.setup(switch_record, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 def record(command):
     # Record in chunks of 1024 samples
@@ -156,7 +158,8 @@ output_details = interpreter.get_output_details()
 
 input_shape = input_details[0]['shape']
 
-input("Press Enter to Continue !!! \n")
+while (GPIO.input(switch_record) != GPIO.HIGH):
+    pass
 command1 = record('voice1')
 # Put some delay as of now input is used
 buzz_bw_commands()
@@ -182,9 +185,6 @@ elif word1_pred == "Window":
     word2_prob = word2_prob.squeeze() * np.array([1, 0, 0, 0, 0, 0, 0, 1, 0, 0])
 elif word1_pred == "Wiper":
     word2_prob = word2_prob.squeeze() * np.array([0, 0, 0, 0, 1, 1, 1, 0, 0, 0])
-
-print(word1_prob)
-print(word2_prob)
 
 word2_pred = ids_to_commands[np.argmax(word2_prob)]
 print(word1_pred + " " + word2_pred)
