@@ -155,6 +155,7 @@ word2 = preprocess(command2).reshape(1, 40, 99, 1).astype(np.float32)
 interpreter.set_tensor(input_details[0]['index'], word1)
 interpreter.invoke()
 word1_prob = interpreter.get_tensor(output_details[0]['index'])
+word1_prob = word1_prob * np.array([0, 1, 0, 0, 0, 0, 0, 0, 1, 1])
 word1_pred = ids_to_commands[np.argmax(word1_prob, axis = 1)[0]]
 
 interpreter.set_tensor(input_details[0]['index'], word2)
