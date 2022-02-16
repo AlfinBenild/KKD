@@ -33,7 +33,7 @@ GPIO.setup(switch_seat_belt, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(sos, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(voice, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(power, GPIO.OUT)
-GPIO.setup(authentication, GPIO.In, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(authentication, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 GPIO.output(power, GPIO.LOW)
 
