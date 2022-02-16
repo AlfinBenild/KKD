@@ -190,10 +190,11 @@ def buzz_bw_commands():
 
 
 while (True):
+    id, hash_val = reader.read()
     rfid_key = (hash_key == hash_val) and (id == id1 or id == id2)
     seat_belt = GPIO.input(switch_seat_belt)
     alcohol = wiringpi.digitalRead(mq3)
-    print(rfid_key, seat_belt, alcohol)
+    print(rfid_key, seat_belt, not alcohol)
     if rfid_key and seat_belt and not alcohol:
         break
 
