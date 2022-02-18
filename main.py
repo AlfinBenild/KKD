@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from os import access
 import numpy as np
 import pyaudio
 import wave 
@@ -297,14 +298,16 @@ def run():
                 print('ACCESS GRANTED')
                 GPIO.output(face_status_red, GPIO.LOW)
                 GPIO.output(face_status_green, GPIO.HIGH)
-                return True
+                access =  True
+                break
             else:
                 print('ACCESS DENIED')
                 GPIO.output(face_status_red, GPIO.HIGH)
                 GPIO.output(face_status_green, GPIO.LOW)
                 if tries == 5:
                     print('Maximum tries exceeded, try later')
-                    return False
+                    acess = False
+                    break
                 tries += 1
 
 
@@ -373,8 +376,8 @@ while True:
             GPIO.output(red, GPIO.LOW)
 
     if GPIO.input(capture) == GPIO.HIGH:
-        face_detect = run()
-        if face_detect:
+        run()
+        if access:
             GPIO.output(green, GPIO.HIGH)
 
 
