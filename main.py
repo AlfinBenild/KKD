@@ -12,6 +12,10 @@ import RPi.GPIO as GPIO
 from time import sleep
 from mfrc522 import SimpleMFRC522
 import wiringpi as wiringpi
+import traceback
+from multiprocessing import Process, Pipe
+import cv2
+import face_recognition
 
 # Pin and variable definitions
 
@@ -25,6 +29,9 @@ voice = 38
 sos = 33
 power = 32
 authentication = 31
+capture = 29
+face_status_green = 3
+face_status_red = 5
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(buzzer, GPIO.OUT)
@@ -34,8 +41,13 @@ GPIO.setup(sos, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(voice, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(power, GPIO.OUT)
 GPIO.setup(authentication, GPIO.OUT)
+GPIO.setup(capture, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(face_status_green, GPIO.OUT)
+GPIO.setup(face_status_red, GPIO.OUT)
 
 GPIO.output(power, GPIO.LOW)
+GPIO.output(face_status_red, GPIO.HIGH)
+GPIO.output(face_status_green, GPIO.LOW)
 
 commands_to_ids = {'Down' : 0, 'Engine' : 1, 'Off' : 2, 'On' : 3, 'One' : 4, 'Three' : 5, 'Two' : 6, 'Up' : 7, 'Window' : 8, 'Wiper' : 9}
 ids_to_commands = {0 : 'Down', 1: 'Engine', 2 : 'Off', 3 : 'On', 4 : 'One', 5 : 'Three', 6 : 'Two',  7 : 'Up', 8 : 'Window', 9 : 'Wiper'}
@@ -192,6 +204,110 @@ def preprocess(filepath):
     cepstral_coefficents = np.dot(dct_filters, audio_log)
     return cepstral_coefficents
 
+
+def acquire_user_image():
+    vid = cv2.VideoCapture(0)
+    fps = 24
+    frame_width = 640
+    frame_height = 480
+
+    vid.set(cv2.CAP_PROP_FRAME_WIDTH, frame_width)
+    vid.set(cv2.CAP_PROP_FRAME_HEIGHT, frame_height)
+    vid.set(cv2.CAP_PROP_FPS, fps)
+
+    while(True):
+        ret, frame = vid.read()
+        cv2.imshow('Acquiring Face', frame)
+        if cv2.waitKey(1) & GPIO.input(capture) == GPIO.HIGH:
+            cv2.imwrite('user'+'.jpg', frame)
+            break
+  
+    vid.release()
+    cv2.destroyAllWindows()
+
+
+def find_user_in_frame(conn, frame, user_encoding):
+    face_locations = face_recognition.face_locations(frame, model='cnn')
+    face_encodings = face_recognition.face_encodings(frame, face_locations, num_jitters=2)
+
+    found_user = False
+    for face_encoding in face_encodings:
+        matches = face_recognition.compare_faces((user_encoding, ), face_encoding, tolerance=0.9)
+
+        found_user = any(matches)
+        if found_user:
+            break
+
+    conn.send(found_user)
+
+
+def load_user_data():
+    try:
+        user_image_face_encoding = np.load('user.npz')
+    except FileNotFoundError:
+        user_image = face_recognition.load_image_file('user.jpg')
+        try:
+            user_image_face_encoding = face_recognition.face_encodings(user_image, num_jitters=10)[0]
+            np.save('user.npz', user_image_face_encoding)
+        except Exception as e:
+            print("Could not detect face, please ensure proper lighting and face orientation")
+
+    return user_image_face_encoding
+
+
+def run():
+
+    user_encoding = load_user_data()
+    
+    vid = cv2.VideoCapture(0)
+    vid = cv2.VideoCapture(0)
+    fps = 24
+    frame_width = 640
+    frame_height = 480
+
+    vid.set(cv2.CAP_PROP_FRAME_WIDTH, frame_width)
+    vid.set(cv2.CAP_PROP_FRAME_HEIGHT, frame_height)
+    vid.set(cv2.CAP_PROP_FPS, fps)
+
+    parent_conn, child_conn = Pipe()
+    find_user_process = None
+
+    tries = 1
+
+    while True:
+        
+        while True:
+            ret, frame = vid.read()
+            cv2.imshow('Scanning Face', frame)
+            if cv2.waitKey(1) & GPIO.input(capture) == GPIO.HIGH:
+                break
+
+        small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+
+        rgb_small_frame = small_frame[:, :, ::-1]
+
+        if find_user_process is None:
+            find_user_process = Process(target=find_user_in_frame, args=(child_conn, rgb_small_frame, user_encoding))
+            find_user_process.start()
+        elif find_user_process is not None and not find_user_process.is_alive():
+            user_found = parent_conn.recv()
+            find_user_process = None
+
+            if user_found:
+                print('ACCESS GRANTED')
+                GPIO.output(face_status_red, GPIO.LOW)
+                GPIO.output(face_status_green, GPIO.HIGH)
+                return True
+            else:
+                print('ACCESS DENIED')
+                GPIO.output(face_status_red, GPIO.HIGH)
+                GPIO.output(face_status_green, GPIO.LOW)
+                if tries == 5:
+                    print('Maximum tries exceeded, try later')
+                    return False
+                tries += 1
+
+
 def buzz_bw_commands():
     GPIO.output(buzzer, GPIO.HIGH)
     sleep(0.5)
@@ -215,11 +331,11 @@ sleep(5)
 GPIO.output(authentication, GPIO.LOW)
 while True:
     if GPIO.input(sos) == GPIO.HIGH:
-        pass
+        acquire_user_image()
+        print("Image acquired successfully")
 
     if GPIO.input(voice) == GPIO.HIGH:
         command1 = record('voice1')
-        # Put some delay as of now input is used
         buzz_bw_commands()
         command2 = record('voice2')
         word1 = preprocess(command1).reshape(1, 40, 99, 1).astype(np.float32)
@@ -255,5 +371,10 @@ while True:
             GPIO.output(red, GPIO.HIGH)
         if command_word == "Window Down":
             GPIO.output(red, GPIO.LOW)
+
+    if GPIO.input(capture) == GPIO.HIGH:
+        face_detect = run()
+        if face_detect:
+            GPIO.output(green, GPIO.HIGH)
 
 
