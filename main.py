@@ -17,6 +17,8 @@ import traceback
 from multiprocessing import Process, Pipe
 import cv2
 import face_recognition
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 
 # Pin and variable definitions
 
@@ -50,6 +52,12 @@ GPIO.output(power, GPIO.LOW)
 GPIO.output(face_status_red, GPIO.HIGH)
 GPIO.output(face_status_green, GPIO.LOW)
 
+
+# initialize the camera and grab a reference to the raw camera capture
+camera = PiCamera()
+rawCapture = PiRGBArray(camera)
+# allow the camera to warmup
+sleep(0.1)
 
 commands_to_ids = {'Down' : 0, 'Engine' : 1, 'Off' : 2, 'On' : 3, 'One' : 4, 'Three' : 5, 'Two' : 6, 'Up' : 7, 'Window' : 8, 'Wiper' : 9}
 ids_to_commands = {0 : 'Down', 1: 'Engine', 2 : 'Off', 3 : 'On', 4 : 'One', 5 : 'Three', 6 : 'Two',  7 : 'Up', 8 : 'Window', 9 : 'Wiper'}
@@ -208,24 +216,9 @@ def preprocess(filepath):
 
 
 def acquire_user_image():
-    vid = cv2.VideoCapture(0)
-    fps = 24
-    frame_width = 640
-    frame_height = 480
-
-    vid.set(cv2.CAP_PROP_FRAME_WIDTH, frame_width)
-    vid.set(cv2.CAP_PROP_FRAME_HEIGHT, frame_height)
-    vid.set(cv2.CAP_PROP_FPS, fps)
-
-    while(True):
-        ret, frame = vid.read()
-        #cv2.imshow('Acquiring Face', frame)
-        if cv2.waitKey(1) & GPIO.input(capture) == GPIO.HIGH:
-            cv2.imwrite('user'+'.jpg', frame)
-            break
-  
-    vid.release()
-    cv2.destroyAllWindows()
+    while (GPIO.input(capture) != GPIO.HIGH):
+        pass
+    camera.capture("user.jpg")
 
 
 def find_user_in_frame(conn, frame, user_encoding):
@@ -278,11 +271,10 @@ def run():
 
     while True:
         
-        while True:
-            ret, frame = vid.read()
-            #cv2.imshow('Scanning Face', frame)
-            if cv2.waitKey(1) & GPIO.input(capture) == GPIO.HIGH:
-                break
+        while (GPIO.input(capture) != GPIO.HIGH):
+            pass
+        camera.capture(rawCapture, format="bgr")
+        frame = rawCapture.array
 
         small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
 
