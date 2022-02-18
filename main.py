@@ -50,6 +50,7 @@ GPIO.output(power, GPIO.LOW)
 GPIO.output(face_status_red, GPIO.HIGH)
 GPIO.output(face_status_green, GPIO.LOW)
 
+
 commands_to_ids = {'Down' : 0, 'Engine' : 1, 'Off' : 2, 'On' : 3, 'One' : 4, 'Three' : 5, 'Two' : 6, 'Up' : 7, 'Window' : 8, 'Wiper' : 9}
 ids_to_commands = {0 : 'Down', 1: 'Engine', 2 : 'Off', 3 : 'On', 4 : 'One', 5 : 'Three', 6 : 'Two',  7 : 'Up', 8 : 'Window', 9 : 'Wiper'}
 
@@ -218,7 +219,7 @@ def acquire_user_image():
 
     while(True):
         ret, frame = vid.read()
-        cv2.imshow('Acquiring Face', frame)
+        #cv2.imshow('Acquiring Face', frame)
         if cv2.waitKey(1) & GPIO.input(capture) == GPIO.HIGH:
             cv2.imwrite('user'+'.jpg', frame)
             break
@@ -279,7 +280,7 @@ def run():
         
         while True:
             ret, frame = vid.read()
-            cv2.imshow('Scanning Face', frame)
+            #cv2.imshow('Scanning Face', frame)
             if cv2.waitKey(1) & GPIO.input(capture) == GPIO.HIGH:
                 break
 
