@@ -36,6 +36,7 @@ face_status_red = 16
 alcohol_timing = 12
 alcohol_status = 15
 seat_belt_status = 13
+seat_belt_timing = 10
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(buzzer, GPIO.OUT)
@@ -51,6 +52,7 @@ GPIO.setup(face_status_red, GPIO.OUT)
 GPIO.setup(alcohol_timing, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(alcohol_status, GPIO.OUT)
 GPIO.setup(seat_belt_status, GPIO.OUT)
+GPIO.setup(seat_belt_timing, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 GPIO.output(power, GPIO.LOW)
 GPIO.output(face_status_red, GPIO.HIGH)
@@ -335,7 +337,7 @@ def not_detected_beep():
 
 
 while (True):
-    while (GPIO.input(seat_belt) != GPIO.HIGH):
+    while (GPIO.input(seat_belt_timing) != GPIO.HIGH):
         pass
     seat_belt = GPIO.input(switch_seat_belt)
     GPIO.output(seat_belt_status, GPIO.HIGH)
