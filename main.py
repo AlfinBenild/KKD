@@ -399,6 +399,7 @@ while True:
         GPIO.output(face_status_red, GPIO.LOW)
         GPIO.output(face_status_green, GPIO.HIGH)
         access = True
+        if access:
             GPIO.output(green, GPIO.HIGH)
 
 
