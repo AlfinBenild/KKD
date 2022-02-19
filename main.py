@@ -31,8 +31,8 @@ sos = 33
 power = 32
 authentication = 31
 capture = 29
-face_status_green = 3
-face_status_red = 5
+face_status_green = 18
+face_status_red = 16
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(buzzer, GPIO.OUT)
