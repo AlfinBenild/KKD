@@ -345,8 +345,8 @@ sleep(5)
 GPIO.output(authentication, GPIO.LOW)
 while True:
     if GPIO.input(sos) == GPIO.HIGH:
-        acquire_user_image()
-        print("Image acquired successfully")
+        GPIO.cleanup()
+        break
 
     if GPIO.input(voice) == GPIO.HIGH:
         command1 = record('voice1')
