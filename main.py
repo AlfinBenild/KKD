@@ -341,6 +341,7 @@ while (True):
     while (GPIO.input(alcohol_timing) != GPIO.HIGH):
         pass
     alcohol = wiringpi.digitalRead(mq3)
+    sleep(2)
     GPIO.output(alcohol_status, GPIO.HIGH)
     print("Not alcoholic")
     id, hash_val = reader.read()
