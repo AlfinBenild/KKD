@@ -39,6 +39,8 @@ seat_belt_status = 13
 seat_belt_timing = 10
 
 GPIO.setmode(GPIO.BOARD)
+GPIO.setup(red, GPIO.OUT)
+GPIO.setup(green, GPIO.OUT)
 GPIO.setup(buzzer, GPIO.OUT)
 GPIO.setup(switch_record, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(switch_seat_belt, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
@@ -81,8 +83,6 @@ id1 = "702537013584"
 id2 = "807655716992"
 wiringpi.wiringPiSetupGpio()
 wiringpi.pinMode(mq3, 0)
-GPIO.setup(red, GPIO.OUT)
-GPIO.setup(green, GPIO.OUT)
 
 # Functions
 
