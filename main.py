@@ -82,12 +82,6 @@ wiringpi.pinMode(mq3, 0)
 GPIO.setup(red, GPIO.OUT)
 GPIO.setup(green, GPIO.OUT)
 
-# Conditions
-id = str(id)
-rfid_key = (hash_key == str(hash_val)) and (id == id1 or id == id2)
-seat_belt = GPIO.input(switch_seat_belt)
-alcohol = wiringpi.digitalRead(mq3)
-
 # Functions
 
 def record(command):
