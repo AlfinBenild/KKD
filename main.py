@@ -371,8 +371,8 @@ while True:
             word2_prob = word2_prob.squeeze() * np.array([0, 0, 1, 1, 0, 0, 0, 0, 0, 0])
         elif word1_pred == "Window":
             word2_prob = word2_prob.squeeze() * np.array([1, 0, 0, 0, 0, 0, 0, 1, 0, 0])
-        elif word1_pred == "Wiper":
-            word2_prob = word2_prob.squeeze() * np.array([0, 0, 0, 0, 1, 1, 1, 0, 0, 0])
+#        elif word1_pred == "Wiper":
+#            word2_prob = word2_prob.squeeze() * np.array([0, 0, 0, 0, 1, 1, 1, 0, 0, 0])
         else:
             not_detected_beep()
             detected = False
