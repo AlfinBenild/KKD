@@ -335,10 +335,12 @@ while (True):
         pass
     seat_belt = GPIO.input(switch_seat_belt)
     GPIO.output(seat_belt_status, GPIO.HIGH)
+    print("Seat belt activated")
     while (GPIO.input(alcohol_timing) != GPIO.HIGH):
         pass
     alcohol = wiringpi.digitalRead(mq3)
     GPIO.output(alcohol_status, GPIO.HIGH)
+    print("Not alcoholic")
     id, hash_val = reader.read()
     id = str(id)
     hash_val = str(hash_val)
