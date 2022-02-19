@@ -57,6 +57,8 @@ GPIO.setup(seat_belt_timing, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.output(power, GPIO.LOW)
 GPIO.output(face_status_red, GPIO.HIGH)
 GPIO.output(face_status_green, GPIO.LOW)
+GPIO.output(alcohol_status, GPIO.LOW)
+GPIO.output(seat_belt_status, GPIO.LOW)
 
 
 commands_to_ids = {'Down' : 0, 'Engine' : 1, 'Off' : 2, 'On' : 3, 'One' : 4, 'Three' : 5, 'Two' : 6, 'Up' : 7, 'Window' : 8, 'Wiper' : 9}
@@ -76,7 +78,6 @@ reader = SimpleMFRC522()
 hash_key = "68c07b6bf4f591095ad1c43c065a801822a6c9cdd8e15364"
 id1 = "702537013584"
 id2 = "807655716992"
-id, hash_val = reader.read()
 wiringpi.wiringPiSetupGpio()
 wiringpi.pinMode(mq3, 0)
 GPIO.setup(red, GPIO.OUT)
