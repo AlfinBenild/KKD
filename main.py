@@ -317,6 +317,16 @@ def buzz_bw_commands():
     sleep(0.5)
     GPIO.output(buzzer, GPIO.LOW)
 
+def not_detected_beep():
+    GPIO.output(buzzer, GPIO.HIGH)
+    sleep(0.25)
+    GPIO.output(buzzer, GPIO.LOW)
+    sleep(0.25)
+    GPIO.output(buzzer, GPIO.HIGH)
+    sleep(0.25)
+    GPIO.output(buzzer, GPIO.LOW)
+    sleep(0.25)
+
 
 while (True):
     id, hash_val = reader.read()
@@ -347,12 +357,13 @@ while True:
         interpreter.set_tensor(input_details[0]['index'], word1)
         interpreter.invoke()
         word1_prob = interpreter.get_tensor(output_details[0]['index'])
-        word1_prob = word1_prob.squeeze() * np.array([0, 1, 0, 0, 0, 0, 0, 0, 1, 1])
+        word1_prob = word1_prob.squeeze()
         word1_pred = ids_to_commands[np.argmax(word1_prob)]
 
         interpreter.set_tensor(input_details[0]['index'], word2)
         interpreter.invoke()
         word2_prob = interpreter.get_tensor(output_details[0]['index'])
+        detected = True
 
         commands = ['Down', 'Engine', 'Off', 'On', 'One', 'Three', 'Two', 'Up', 'Window', 'Wiper']
 
@@ -362,19 +373,23 @@ while True:
             word2_prob = word2_prob.squeeze() * np.array([1, 0, 0, 0, 0, 0, 0, 1, 0, 0])
         elif word1_pred == "Wiper":
             word2_prob = word2_prob.squeeze() * np.array([0, 0, 0, 0, 1, 1, 1, 0, 0, 0])
+        else:
+            not_detected_beep()
+            detected = False
+        
+        if detected:
+            word2_pred = ids_to_commands[np.argmax(word2_prob)]
+            command_word = word1_pred + " " + word2_pred
+            print(command_word)
 
-        word2_pred = ids_to_commands[np.argmax(word2_prob)]
-        command_word = word1_pred + " " + word2_pred
-        print(command_word)
-
-        if command_word == "Engine On":
-            GPIO.output(green, GPIO.HIGH)
-        if command_word == "Engine Off":
-            GPIO.output(green, GPIO.LOW)
-        if command_word == "Window Up":
-            GPIO.output(red, GPIO.HIGH)
-        if command_word == "Window Down":
-            GPIO.output(red, GPIO.LOW)
+            if command_word == "Engine On":
+                GPIO.output(green, GPIO.HIGH)
+            if command_word == "Engine Off":
+                GPIO.output(green, GPIO.LOW)
+            if command_word == "Window Up":
+                GPIO.output(red, GPIO.HIGH)
+            if command_word == "Window Down":
+                GPIO.output(red, GPIO.LOW)
 
     if GPIO.input(capture) == GPIO.HIGH:
         run()
