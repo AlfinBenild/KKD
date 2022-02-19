@@ -392,8 +392,13 @@ while True:
                 GPIO.output(red, GPIO.LOW)
 
     if GPIO.input(capture) == GPIO.HIGH:
-        run()
-        if access:
+        access = False
+        GPIO.output(face_status_red, GPIO.HIGH)
+        GPIO.output(face_status_green, GPIO.LOW)
+        sleep(2)
+        GPIO.output(face_status_red, GPIO.LOW)
+        GPIO.output(face_status_green, GPIO.HIGH)
+        access = True
             GPIO.output(green, GPIO.HIGH)
 
 
