@@ -33,6 +33,9 @@ authentication = 31
 capture = 29
 face_status_green = 18
 face_status_red = 16
+alcohol_timing = 12
+alcohol_status = 15
+seat_belt_status = 13
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(buzzer, GPIO.OUT)
@@ -45,6 +48,9 @@ GPIO.setup(authentication, GPIO.OUT)
 GPIO.setup(capture, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(face_status_green, GPIO.OUT)
 GPIO.setup(face_status_red, GPIO.OUT)
+GPIO.setup(alcohol_timing, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(alcohol_status, GPIO.OUT)
+GPIO.setup(seat_belt_status, GPIO.OUT)
 
 GPIO.output(power, GPIO.LOW)
 GPIO.output(face_status_red, GPIO.HIGH)
@@ -329,12 +335,18 @@ def not_detected_beep():
 
 
 while (True):
+    while (GPIO.input(seat_belt) != GPIO.HIGH):
+        pass
+    seat_belt = GPIO.input(switch_seat_belt)
+    GPIO.output(seat_belt_status, GPIO.HIGH)
+    while (GPIO.input(alcohol_timing) != GPIO.HIGH):
+        pass
+    alcohol = wiringpi.digitalRead(mq3)
+    GPIO.output(alcohol_status, GPIO.HIGH)
     id, hash_val = reader.read()
     id = str(id)
     hash_val = str(hash_val)
     rfid_key = (hash_key == hash_val)  and (id == id1 or id == id2)
-    seat_belt = GPIO.input(switch_seat_belt)
-    alcohol = wiringpi.digitalRead(mq3)
     print(rfid_key, seat_belt, not alcohol)
     if rfid_key and seat_belt and not alcohol:
         break
