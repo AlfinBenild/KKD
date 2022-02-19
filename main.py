@@ -24,7 +24,7 @@ buzzer = 40
 switch_record = 38
 switch_seat_belt = 36
 mq3 = 26
-red = 37
+red = 8
 green = 35
 voice = 38
 sos = 33
@@ -62,6 +62,8 @@ GPIO.output(face_status_green, GPIO.LOW)
 GPIO.output(alcohol_status, GPIO.LOW)
 GPIO.output(seat_belt_status, GPIO.LOW)
 GPIO.output(green, GPIO.LOW)
+GPIO.output(red, GPIO.LOW)
+
 
 
 commands_to_ids = {'Down' : 0, 'Engine' : 1, 'Off' : 2, 'On' : 3, 'One' : 4, 'Three' : 5, 'Two' : 6, 'Up' : 7, 'Window' : 8, 'Wiper' : 9}
